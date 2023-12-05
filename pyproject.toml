@@ -1,0 +1,23 @@
+[tool.poetry]
+name = "naplan_scraper"
+version = "0.1.0"
+description = ""
+authors = ["Yass Eltahir <yeltahir@gmail.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.9"
+pandas = "^2.1.3"
+playwright = "^1.40.0"
+beautifulsoup4 = "^4.12.2"
+openpyxl = "^3.1.2"
+
+[tool.poetry.dev-dependencies]
+
+[tool.poetry.group.dev.dependencies]
+black = "^23.11.0"
+flake8 = "^6.1.0"
+jupyter = "^1.0.0"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
