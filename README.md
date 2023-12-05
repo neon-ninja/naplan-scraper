@@ -20,7 +20,7 @@ poetry run python naplan_scrapyer.py {school id} # EG:
 poetry run python naplan_scrapyer.py 45587
 ```
 
-To figure out the `school-id` you can download the [School Profile 2008-2022 (xlsx, 24 MB)](https://acara.edu.au/docs/default-source/default-document-library/school-profile-2008-2022.xlsx?sfvrsn=d40e4c07_0) which contains the `school-id` (ACARA SML ID) as well as other data points such as:
+To figure out the `school-id` you can download [School Profile 2008-2022 (xlsx, 24 MB)](https://acara.edu.au/docs/default-source/default-document-library/school-profile-2008-2022.xlsx?sfvrsn=d40e4c07_0) which contains the `school-id` (ACARA SML ID) as well as other data points such as:
 
 - Whether it is independent, public, etc
 - ICSEA, an **I**ndex of **C**ommunity **S**ocio-**E**ducational **A**dvantage
@@ -47,5 +47,5 @@ docker run naplanscraper 45587
 
 - [ ] Add some tests
 - [ ] Lint & type-check
-- [ ] Deploy to Batch
+- [ ] Deploy to AWS Batch
   - Write a script to iterate over each school ID, check if the results are available in S3 already & if not, submit a job to batch for the school ID
