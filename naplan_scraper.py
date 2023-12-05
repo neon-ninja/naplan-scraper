@@ -7,11 +7,7 @@ import time
 import pandas as pd
 from playwright.async_api import async_playwright
 
-from scraper.utils import (
-    accept_tcs,
-    extract_naplan_results,
-    extract_raw_table_results_data,
-)
+from scraper.utils import accept_tcs, extract_naplan_results, extract_raw_table_results_data
 
 parser = argparse.ArgumentParser()
 parser.add_argument(
@@ -28,23 +24,20 @@ BASE_URL = "https://www.myschool.edu.au"
 SCHOOL_ID = args.SMLID
 
 
-
-async def main():
-    """Main entrypoint to scraping results.
-    """
+async def main() -> None:
+    """Main entrypoint to scraping results."""
     async with async_playwright() as p:
         print("Starting browser...")
         browser = await p.chromium.launch(headless=True)
-        
-        user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3359.181 Safari/537.36";
+
+        user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3359.181 Safari/537.36"  # noqa
         page = await browser.new_page(user_agent=user_agent, java_script_enabled=True)
-        
-        
+
         # Navigate to website & accept T&C's
         await page.goto(BASE_URL)
         print("Accepting T&C's...")
-        await accept_tcs(page) 
-        
+        await accept_tcs(page)
+
         print("Scraping results...")
         results = []
         for year_of_interest in AVAILABLE_YEARS:
@@ -59,7 +52,7 @@ async def main():
             table_html = await extract_raw_table_results_data(page)
 
             # Results for year
-            results.append(extract_naplan_results(table_html, year_of_interest)) 
+            results.append(extract_naplan_results(table_html, year_of_interest))
 
         results_df = pd.concat(results)
         results_df.to_csv(f"{SCHOOL_ID}_results.csv")
@@ -69,7 +62,5 @@ async def main():
         await browser.close()
 
 
-
 if __name__ == "__main__":
-
-    asyncio.run(main())    
+    asyncio.run(main())
