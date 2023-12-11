@@ -25,6 +25,10 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
     PATH="$PATH:/root/.local/bin"
 
 
+# Application Variables
+ENV SMLID=$SMLID
+
+
 ARG DEBIAN_FRONTEND=noninteractive
 
 # Install Requirements
