@@ -40,10 +40,10 @@ docker build . -t naplanscraper --platform linux/amd64
 The scraper requires a `school-id` to run, ensure this is passed when running the image.
 
 ```bash
-docker run naplanscraper {School ID}
+docker run naplanscraper -e {School ID}
 
 # Eg:
-docker run naplanscraper 45587
+docker run naplanscraper -e SMLID
 ```
 
 # TO-DO
