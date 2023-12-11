@@ -32,6 +32,9 @@ Build the docker image using:
 
 ```bash
 docker build . -t naplanscraper
+
+# Or for all you M1/2/3 mac users
+docker build . -t naplanscraper --platform linux/amd64
 ```
 
 The scraper requires a `school-id` to run, ensure this is passed when running the image.
