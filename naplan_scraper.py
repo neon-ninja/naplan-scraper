@@ -8,7 +8,7 @@ import pandas as pd
 from playwright.async_api import async_playwright
 
 from scraper.utils import (accept_tcs, extract_naplan_results,
-                           extract_raw_table_results_data)
+                           extract_raw_table_results_data, save_results_to_s3)
 
 SCHOOL_ID = os.getenv("SMLID")
 if SCHOOL_ID is None:
@@ -53,7 +53,8 @@ async def main() -> None:
         results_df = pd.concat(results)
         results_df.to_csv(f"{SCHOOL_ID}_results.csv")
 
-        print(results_df)
+        # print(results_df)
+        save_results_to_s3(results_df, SCHOOL_ID)
 
         await browser.close()
 
