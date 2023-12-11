@@ -1,27 +1,23 @@
 """Main entry point for scraping NAPLAN Results."""
 
-import argparse
 import asyncio
+import os
 import time
 
 import pandas as pd
 from playwright.async_api import async_playwright
 
-from scraper.utils import accept_tcs, extract_naplan_results, extract_raw_table_results_data
+from scraper.utils import (accept_tcs, extract_naplan_results,
+                           extract_raw_table_results_data)
 
-parser = argparse.ArgumentParser()
-parser.add_argument(
-    "SMLID",
-    type=int,
-    help="ACARA SML ID for the school of interest",
-)
-args = parser.parse_args()
+SCHOOL_ID = os.getenv("SMLID")
+if SCHOOL_ID is None:
+    raise Exception("No SMLID Provided")
 
 
 # NAPLAN wasn't run in 2020 due to COVID
 AVAILABLE_YEARS = ["2017", "2018", "2019", "2021", "2022"]
 BASE_URL = "https://www.myschool.edu.au"
-SCHOOL_ID = args.SMLID
 
 
 async def main() -> None:
