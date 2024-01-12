@@ -107,9 +107,9 @@ def extract_naplan_results(raw_table_html: str, calendar_year: int) -> pd.DataFr
     # Thus, we need to repeat the table headers for each year level
     required_multiples = len(df) // len(table_headers)
     df["domain"] = table_headers * required_multiples
-    df["test_type"] = test_type
+    if len(test_type) == df.shape[0]:
+        df["test_type"] = test_type
     return df
-
 
 
 def save_results_to_s3(results: pd.DataFrame, school_id: int) -> None:
@@ -120,6 +120,7 @@ def save_results_to_s3(results: pd.DataFrame, school_id: int) -> None:
         school_id (int): School SMLID
     """
     # Config
+    # Should both probs be from env-vars but ceebs
     bucket_name = "naplan"
     file_key = f"{school_id}_results.csv"
 
@@ -130,4 +131,3 @@ def save_results_to_s3(results: pd.DataFrame, school_id: int) -> None:
     # Setup Session & save file
     s3_client = boto3.client("s3")
     s3_client.put_object(Body=csv_buffer.getvalue(), Bucket=bucket_name, Key=file_key)
-
