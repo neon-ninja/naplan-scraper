@@ -1,6 +1,7 @@
 *.csv
 scratchpad.py
 requirements.txt
+proxy_list*.txt
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
