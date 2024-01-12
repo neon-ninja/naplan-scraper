@@ -2,6 +2,9 @@
 scratchpad.py
 requirements.txt
 proxy_list*.txt
+school-location-2008-2022.xlsx
+*.txt
+*.crt
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
