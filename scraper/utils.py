@@ -1,8 +1,6 @@
 """Utilities to aid scraping."""
 
-from io import StringIO
 
-import boto3
 import pandas as pd
 from bs4 import BeautifulSoup
 from playwright.async_api import Page
@@ -110,24 +108,3 @@ def extract_naplan_results(raw_table_html: str, calendar_year: int) -> pd.DataFr
     if len(test_type) == df.shape[0]:
         df["test_type"] = test_type
     return df
-
-
-def save_results_to_s3(results: pd.DataFrame, school_id: int) -> None:
-    """Write scraped results to S3
-
-    Args:
-        results (pd.DataFrame): Scraped naplan results
-        school_id (int): School SMLID
-    """
-    # Config
-    # Should both probs be from env-vars but ceebs
-    bucket_name = "naplan"
-    file_key = f"{school_id}_results.csv"
-
-    # Store file in memory buffer rather than writing to disk
-    csv_buffer = StringIO()
-    results.to_csv(csv_buffer, index=False)
-
-    # Setup Session & save file
-    s3_client = boto3.client("s3")
-    s3_client.put_object(Body=csv_buffer.getvalue(), Bucket=bucket_name, Key=file_key)

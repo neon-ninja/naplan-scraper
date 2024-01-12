@@ -7,48 +7,21 @@ NAPLAN data is publicly available on [MySchool](myschool.edu.au/). Unfortunately
 
 🤦🏾‍♂️
 
-...anyway, here's a python tool to scrape NAPLAN results for a given school.
+...anyway, here's a python tool to scrape NAPLAN results.
 
 # Running It
+
+You'll almost certainly get blocked running this. ATM it's setup to randomly rotate through a list of proxies. Ensure you have a file called `proxy_list.txt` in your root folder.
 
 The simplest way to get started is via [poetry](https://python-poetry.org/), simply:
 
 ```bash
 pip install poetry # if not already installed
 poetry install
-poetry run python naplan_scrapyer.py {school id} # EG:
-poetry run python naplan_scrapyer.py 45587
-```
-
-To figure out the `school-id` you can download [School Profile 2008-2022 (xlsx, 24 MB)](https://acara.edu.au/docs/default-source/default-document-library/school-profile-2008-2022.xlsx?sfvrsn=d40e4c07_0) which contains the `school-id` (ACARA SML ID) as well as other data points such as:
-
-- Whether it is independent, public, etc
-- ICSEA, an **I**ndex of **C**ommunity **S**ocio-**E**ducational **A**dvantage
-- And more...
-
-# Run via Docker
-
-Build the docker image using:
-
-```bash
-docker build . -t naplanscraper
-
-# Or for all you M1/2/3 mac users
-docker build . -t naplanscraper --platform linux/amd64
-```
-
-The scraper requires a `school-id` to run, ensure this is passed when running the image.
-
-```bash
-docker run naplanscraper -e {School ID}
-
-# Eg:
-docker run naplanscraper -e SMLID
+poetry run python scraper/generate_school_ids.py
+poetry run python scrape_all.py
 ```
 
 # TO-DO
 
-- [ ] Add some tests
-- [ ] Lint & type-check
-- [ ] Deploy to AWS Batch
-  - Write a script to iterate over each school ID, check if the results are available in S3 already & if not, submit a job to batch for the school ID
+- [ ] Get it to run without getting stuck on Catpchas or IP blocks
