@@ -14,16 +14,16 @@ AVAILABLE_YEARS = ["2024"]
 BASE_URL = "https://www.myschool.edu.au"
 
 async def create_page(proxy_details: Dict[str, str]):
-    async with async_playwright() as pw:
-        context = await pw.chromium.launch_persistent_context(
-            user_data_dir="user_data",
-            channel="chrome",
-            headless=True,
-            no_viewport=True,
-        )
-        await context.add_cookies([{'name': 'TERMS_OF_USE_AGREED', 'value': '1', 'url': BASE_URL}])
-        page = await context.new_page()
-        return page
+    playwright = await async_playwright().start()
+    context = await playwright.chromium.launch_persistent_context(
+        user_data_dir="user_data",
+        channel="chrome",
+        headless=False,
+        no_viewport=True,
+    )
+    await context.add_cookies([{'name': 'TERMS_OF_USE_AGREED', 'value': '1', 'url': BASE_URL}])
+    page = await context.new_page()
+    return page
 
 async def naplan_scraper(page: Page, school_id: int) -> None:
     await page.goto(f"{BASE_URL}/school/{school_id}/naplan/results/2024")
