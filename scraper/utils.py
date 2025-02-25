@@ -3,8 +3,10 @@
 
 import pandas as pd
 from bs4 import BeautifulSoup
-from playwright.async_api import Page
+#from playwright.async_api import Page, expect
+from patchright.async_api import Page, expect
 
+expect.set_options(timeout=15_000)
 
 async def extract_raw_table_results_data(page: Page):
     """Retrieve the NAPLAN results table
@@ -16,27 +18,10 @@ async def extract_raw_table_results_data(page: Page):
     Returns:
         _type_: _description_
     """
+    locator = page.locator("#similarSchoolsTable")
+    await expect(locator).to_be_attached()
     table_html = await page.inner_html("#similarSchoolsTable")
     return table_html
-
-
-async def accept_tcs(page: Page) -> None:
-    """Accepts T&C's
-
-    Args:
-        page (_type_): _description_
-    """
-    try:
-        # Click the "I Accept Box"
-        await page.get_by_role("checkbox").check()
-
-        # Click the "Accept" button
-        await page.get_by_role("button", name="Accept").click()
-
-    except Exception as ex:
-        print("Error in accepting T&C's")
-        print(ex)
-
 
 def extract_naplan_results(raw_table_html: str, calendar_year: int) -> pd.DataFrame:
     """Parses the raw NAPLAN results HTML & returns a cleaned dataframe.
@@ -67,6 +52,7 @@ def extract_naplan_results(raw_table_html: str, calendar_year: int) -> pd.DataFr
 
     results = []
     test_type = []
+    sim_avg = []
 
     for row in tbody.find_all("tr"):
         element_class = row.get("class")
@@ -98,6 +84,9 @@ def extract_naplan_results(raw_table_html: str, calendar_year: int) -> pd.DataFr
             }
 
             results.append(result_dict)
+        
+        elif "sim-all-row" in element_class:
+            sim_avg.append(row.find("span", class_="sim-avg").get_text(strip=True))
 
     df = pd.DataFrame(results)
 
@@ -107,4 +96,12 @@ def extract_naplan_results(raw_table_html: str, calendar_year: int) -> pd.DataFr
     df["domain"] = table_headers * required_multiples
     if len(test_type) == df.shape[0]:
         df["test_type"] = test_type
+    if len(sim_avg) == df.shape[0]:
+        df["sim_avg"] = sim_avg
     return df
+
+if __name__ == "__main__":
+    with open("sample.html", "r") as f:
+        raw_html = f.read()
+        df = extract_naplan_results(raw_html, 2024)
+        print(df)
