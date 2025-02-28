@@ -3,25 +3,6 @@
 
 import pandas as pd
 from bs4 import BeautifulSoup
-#from playwright.async_api import Page, expect
-from patchright.async_api import Page, expect
-
-expect.set_options(timeout=15_000)
-
-async def extract_raw_table_results_data(page: Page):
-    """Retrieve the NAPLAN results table
-
-    Args:
-        page (_type_): School Results page, eg:
-            https://www.myschool.edu.au/school/44461/naplan/results
-
-    Returns:
-        _type_: _description_
-    """
-    locator = page.locator("#similarSchoolsTable")
-    await expect(locator).to_be_attached()
-    table_html = await page.inner_html("#similarSchoolsTable")
-    return table_html
 
 def extract_naplan_results(raw_table_html: str, calendar_year: int) -> pd.DataFrame:
     """Parses the raw NAPLAN results HTML & returns a cleaned dataframe.
@@ -93,7 +74,7 @@ def extract_naplan_results(raw_table_html: str, calendar_year: int) -> pd.DataFr
     # The data is in row base, rather than column based format
     # Thus, we need to repeat the table headers for each year level
     required_multiples = len(df) // len(table_headers)
-    df["domain"] = table_headers * required_multiples
+    #df["domain"] = table_headers * required_multiples
     if len(test_type) == df.shape[0]:
         df["test_type"] = test_type
     if len(sim_avg) == df.shape[0]:

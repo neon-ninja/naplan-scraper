@@ -4,29 +4,29 @@ import time
 from typing import Dict
 
 import pandas as pd
-#from playwright.async_api import async_playwright
-from patchright.async_api import async_playwright, Page
+import undetected_chromedriver as uc
+from selenium.webdriver.common.by import By
 
-from scraper.utils import extract_naplan_results, extract_raw_table_results_data
+from scraper.utils import extract_naplan_results
 
 # NAPLAN wasn't run in 2020 due to COVID
 AVAILABLE_YEARS = ["2024"]
 BASE_URL = "https://www.myschool.edu.au"
 
-async def create_page(proxy_details: Dict[str, str]):
-    playwright = await async_playwright().start()
-    context = await playwright.chromium.launch_persistent_context(
-        user_data_dir="user_data",
-        channel="chrome",
-        headless=False,
-        no_viewport=True,
-    )
-    await context.add_cookies([{'name': 'TERMS_OF_USE_AGREED', 'value': '1', 'url': BASE_URL}])
-    page = await context.new_page()
-    return page
+async def create_page():
+    driver = uc.Chrome(headless=False, use_subprocess=False)
+    driver.implicitly_wait(15)
+    driver.get(BASE_URL)
+    driver.add_cookie({"name": "TERMS_OF_USE_AGREED", "value": "1"})
+    return driver
 
-async def naplan_scraper(page: Page, school_id: int) -> None:
-    await page.goto(f"{BASE_URL}/school/{school_id}/naplan/results/2024")
-    table_html = await extract_raw_table_results_data(page)
+async def naplan_scraper(driver, school_id: int) -> None:
+    url = f"{BASE_URL}/school/{school_id}/naplan/results/2024"
+    print(url)
+    driver.get(url)
+    if "Page Not Found" in driver.title:
+        pd.DataFrame().to_csv(f"results/{school_id}_results.csv", index=False)
+        return
+    table_html = driver.find_element(By.CSS_SELECTOR, "#similarSchoolsTable").get_attribute('innerHTML')
     df = extract_naplan_results(table_html, 2024)
     df.to_csv(f"results/{school_id}_results.csv", index=False)

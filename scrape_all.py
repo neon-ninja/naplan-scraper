@@ -14,16 +14,13 @@ SCHOOL_IDS = pd.read_csv("school_ids.csv")["school_ids"].to_list()
 os.makedirs("results", exist_ok=True)
 SCRAPED_IDS = [int(x.strip("_results.csv")) for x in os.listdir("results/")]
 
-tor_proxy = {
-    "server": "localhost:9050"
-}
-
 schools_to_scrape = [x for x in SCHOOL_IDS if x not in SCRAPED_IDS]
 
 async def main():
-    page = await create_page({})
+    page = await create_page()
     for school_id in tqdm(schools_to_scrape):
         await naplan_scraper(page, school_id)
+        await asyncio.sleep(20)
 
 if __name__ == "__main__":
     asyncio.run(main())
