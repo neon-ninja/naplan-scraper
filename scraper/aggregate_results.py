@@ -16,6 +16,7 @@ def get_results(school_id):
     return None, None
 
 df["school_avg"], df["school_sim_avg"] = zip(*df["ACARA SML ID"].progress_apply(get_results))
+print(f"{df.school_avg.isna().sum()}/{df.shape[0]} schools missing results")
 df["diff"] = df["school_avg"] - df["school_sim_avg"]
 
 df.to_csv("WA_schools.csv", index=False)
