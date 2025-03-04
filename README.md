@@ -1,6 +1,6 @@
 # NAPLAN Scraper
 
-NAPLAN data is publicly available on [MySchool](myschool.edu.au/). Unfortunately [ACARA](https://www.acara.edu.au/), the oranisation behind MySchool won't provide all the results in a spreadsheet because:
+NAPLAN data is publicly available on [MySchool](https://myschool.edu.au/). Unfortunately [ACARA](https://www.acara.edu.au/), the oranisation behind MySchool won't provide all the results in a spreadsheet because:
 
 - "ACARA’s data access protocols are intended to facilitate quality research and maximise benefits to students, schools and the Australian community, while mitigating risk of misuse of data and associated harm to schooling in Australia.” AND
 - "We don’t promote the comparison of schools based on results alone and therefore don’t provide data for personal use. "
