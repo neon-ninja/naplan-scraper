@@ -19,7 +19,11 @@ schools_to_scrape = [x for x in SCHOOL_IDS if x not in SCRAPED_IDS]
 async def main():
     page = await create_page()
     for school_id in tqdm(schools_to_scrape):
-        await naplan_scraper(page, school_id)
+        try:
+            await naplan_scraper(page, school_id)
+        except Exception as e:
+            print(e)
+            await asyncio.sleep(5)
 
 if __name__ == "__main__":
     asyncio.run(main())

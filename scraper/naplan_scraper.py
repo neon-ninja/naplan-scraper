@@ -23,7 +23,7 @@ async def create_page():
 
 async def naplan_scraper(driver, school_id: int) -> None:
     url = f"{BASE_URL}/school/{school_id}/naplan/results/2024"
-    for retry in range(5):
+    for retry in range(10):
         print(url)
         driver.get(url)
         if "Page Not Found" in driver.title:
@@ -37,12 +37,15 @@ async def naplan_scraper(driver, school_id: int) -> None:
                 recaptcha_iframe = driver.find_element(By.XPATH, '//iframe[@title="reCAPTCHA"]')
                 solver.click_recaptcha_v2(iframe=recaptcha_iframe)
             except Exception as e:
-                print(e)
+                print(f"{type(e)}: {e}")
             continue_button = driver.find_element(By.CSS_SELECTOR, "input[value='Continue']")
-            print(continue_button)
             continue_button.click()
-            continue
 
-        df = extract_naplan_results(table_html, 2024)
+        try:
+            table_html = driver.find_element(By.CSS_SELECTOR, "#similarSchoolsTable").get_attribute('innerHTML')
+            df = extract_naplan_results(table_html, 2024)
+        except:
+            # Redirect failed, try again
+            continue
         df.to_csv(f"results/{school_id}_results.csv", index=False)
         return
